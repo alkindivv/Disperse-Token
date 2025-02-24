@@ -18,11 +18,15 @@ contract RelayerContract is ReentrancyGuard, Ownable {
     bool public active;
     address public sender;
 
+    // Konstanta
+    uint256 public constant MIN_DELAY = 10 seconds; // Diubah dari 1 jam menjadi 10 detik untuk testing
+
     constructor(address _token, uint256 _minDelay, address _sender) {
         token = IERC20(_token);
         minDelay = _minDelay;
         active = true;
         sender = _sender;
+        lastForwardTime = block.timestamp;
     }
 
     modifier onlySender() {
@@ -59,6 +63,7 @@ contract RelayerContract is ReentrancyGuard, Ownable {
 
     // Update delay
     function updateDelay(uint256 _minDelay) external onlySender {
+        require(_minDelay >= MIN_DELAY, "Delay too short");
         minDelay = _minDelay;
         emit DelayUpdated(_minDelay);
     }

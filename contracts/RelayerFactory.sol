@@ -12,7 +12,7 @@ contract RelayerFactory {
     mapping(address => bool) public isRegisteredRelayer;
     address[] public relayers;
     uint256 public constant MIN_RELAYERS = 5;
-    uint256 public constant DEFAULT_DELAY = 1 hours;
+    uint256 public constant DEFAULT_DELAY = 10 seconds;
 
     // Create new relayer contract
     function createRelayer(address token) external returns (address) {
@@ -58,5 +58,16 @@ contract RelayerFactory {
         ) % relayers.length;
 
         return relayers[randomIndex];
+    }
+
+    // Get relayer by index
+    function getRelayerByIndex(uint256 index) external view returns (address) {
+        require(index < relayers.length, "Index out of bounds");
+        return relayers[index];
+    }
+
+    // Check if address is registered relayer
+    function isRelayer(address addr) external view returns (bool) {
+        return isRegisteredRelayer[addr];
     }
 }
